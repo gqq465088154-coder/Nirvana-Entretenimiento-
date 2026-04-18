@@ -1,8 +1,8 @@
 const { Pool } = require('pg');
 
 const connectionString = process.env.DATABASE_URL;
-const connectTimeoutMs = Number(process.env.DB_CONNECT_TIMEOUT_MS || 1200);
-const healthTimeoutMs = Number(process.env.DB_HEALTH_TIMEOUT_MS || 1200);
+const connectTimeoutMs = Number(process.env.DB_CONNECT_TIMEOUT_MS || 5000);
+const healthTimeoutMs = Number(process.env.DB_HEALTH_TIMEOUT_MS || 5000);
 
 const pool = new Pool({
   connectionString,

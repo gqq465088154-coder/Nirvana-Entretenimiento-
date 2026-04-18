@@ -1,7 +1,7 @@
 const { createClient } = require('redis');
 
 const redisUrl = process.env.REDIS_URL;
-const healthTimeoutMs = Number(process.env.REDIS_HEALTH_TIMEOUT_MS || 1200);
+const healthTimeoutMs = Number(process.env.REDIS_HEALTH_TIMEOUT_MS || 5000);
 
 const redisClient = redisUrl
   ? createClient({

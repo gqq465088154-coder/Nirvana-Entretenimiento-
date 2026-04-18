@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 
 const authMiddleware = require('./middleware/auth');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
@@ -11,6 +12,12 @@ const sportsbookRoutes = require('./routes/sportsbook');
 const casinoRoutes = require('./routes/casino');
 
 const app = express();
+const authApiLimiter = rateLimit({
+  windowMs: Number(process.env.AUTH_API_RATE_LIMIT_WINDOW_MS || 60_000),
+  max: Number(process.env.AUTH_API_RATE_LIMIT_MAX || 120),
+  standardHeaders: true,
+  legacyHeaders: false
+});
 
 app.use(helmet());
 app.use(cors());
@@ -23,8 +30,8 @@ app.use(
 
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/sportsbook', authMiddleware, sportsbookRoutes);
-app.use('/api/casino', authMiddleware, casinoRoutes);
+app.use('/api/sportsbook', authApiLimiter, authMiddleware, sportsbookRoutes);
+app.use('/api/casino', authApiLimiter, authMiddleware, casinoRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
