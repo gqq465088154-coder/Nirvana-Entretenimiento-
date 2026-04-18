@@ -1,0 +1,103 @@
+.sequence {
+  position: relative;
+  width: min(360px, 80vw);
+  height: 180px;
+  margin: 0 auto 1.25rem;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(13, 12, 20, 0.85);
+  animation: phoenix-rebirth-sequence 3.8s ease forwards;
+  box-shadow: 0 10px 30px rgba(255, 138, 0, 0.28);
+}
+
+.stageDark,
+.stageFlame,
+.core,
+.explosion {
+  position: absolute;
+  inset: 0;
+}
+
+.stageDark {
+  background: radial-gradient(circle at center, #262433 0%, #07060b 85%);
+  animation: dark-phase 3.8s ease forwards;
+}
+
+.stageFlame {
+  opacity: 0;
+  background: radial-gradient(circle at center, rgba(255, 138, 0, 0.9) 0%, rgba(255, 45, 45, 0.2) 60%, transparent 100%);
+  animation: flame-phase 3.8s ease forwards;
+}
+
+.core {
+  display: grid;
+  place-items: center;
+}
+
+.phoenix {
+  font-size: 2.2rem;
+  opacity: 0;
+  transform: scale(0.45);
+  animation: phoenix-rise 3.8s ease forwards;
+  filter: drop-shadow(0 0 14px rgba(255, 179, 71, 0.9));
+}
+
+.explosion {
+  opacity: 0;
+  border-radius: 50%;
+  transform: scale(0.05);
+  background: radial-gradient(circle, rgba(255, 209, 102, 0.95), rgba(255, 138, 0, 0.3), transparent 70%);
+  animation: phoenix-explosion 3.8s ease forwards;
+}
+
+@keyframes dark-phase {
+  0%,
+  28% { opacity: 1; }
+  45%,
+  100% { opacity: 0.25; }
+}
+
+@keyframes flame-phase {
+  0%,
+  26% { opacity: 0; }
+  50% { opacity: 0.95; }
+  100% { opacity: 0.2; }
+}
+
+@keyframes phoenix-rise {
+  0%,
+  40% {
+    opacity: 0;
+    transform: scale(0.45) translateY(18px);
+  }
+  62% {
+    opacity: 1;
+    transform: scale(1.2) translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes phoenix-explosion {
+  0%,
+  58% {
+    opacity: 0;
+    transform: scale(0.05);
+  }
+  75% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+
+@keyframes phoenix-rebirth-sequence {
+  0% { filter: brightness(0.4); }
+  50% { filter: brightness(1.2); }
+  100% { filter: brightness(1); }
+}

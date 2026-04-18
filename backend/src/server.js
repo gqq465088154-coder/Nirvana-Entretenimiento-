@@ -1,21 +1,41 @@
 const express = require('express');
+const helmet = require('helmet');
+const { env } = require('./config/env');
+const { connectRedis } = require('./db/redis');
+const { authRouter } = require('./routes/auth');
+const { sportsbookRouter } = require('./routes/sportsbook');
+const { casinoRouter } = require('./routes/casino');
+const { healthRouter } = require('./routes/health');
+const { authenticateJwt } = require('./middleware/auth');
+const { errorHandler, notFoundHandler } = require('./middleware/error-handler');
+const { logger } = require('./utils/logger');
 
 const app = express();
-const port = process.env.PORT || 4000;
 
-app.use(express.json());
-
-app.get('/api/health', (_req, res) => {
-  res.status(200).json({
-    status: 'ok',
-    service: 'nirvana-backend',
-    timestamp: new Date().toISOString()
-  });
+app.use(helmet());
+app.use(express.json({ limit: '1mb' }));
+app.use((req, _res, next) => {
+  logger.info('request_received', { method: req.method, path: req.originalUrl });
+  next();
 });
 
-// TODO(next): Integrate JWT authentication middleware and token issuing routes.
-// TODO(next): Add region-aware currency endpoints for ARS/CLP/USD/BRL pricing.
+app.use('/api/health', healthRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/sportsbook', authenticateJwt, sportsbookRouter);
+app.use('/api/casino', authenticateJwt, casinoRouter);
 
-app.listen(port, () => {
-  console.log(`Nirvana backend listening on http://localhost:${port}`);
+app.use(notFoundHandler);
+app.use(errorHandler);
+
+async function startServer() {
+  await connectRedis();
+
+  app.listen(env.port, () => {
+    logger.info('server_started', { url: `http://localhost:${env.port}`, nodeEnv: env.nodeEnv });
+  });
+}
+
+startServer().catch((error) => {
+  logger.error('server_start_failed', { error: error.message });
+  process.exitCode = 1;
 });

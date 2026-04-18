@@ -1,0 +1,12 @@
+.git
+.gitignore
+.github
+node_modules
+**/node_modules
+**/.next
+.env
+**/.env
+*.log
+coverage
+dist
+release

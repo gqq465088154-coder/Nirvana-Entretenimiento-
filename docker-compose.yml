@@ -1,0 +1,61 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:16.4-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: nirvana
+      POSTGRES_USER: nirvana
+      POSTGRES_PASSWORD: nirvana
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  redis:
+    image: redis:7.4.2-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - '6379:6379'
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: backend-runner
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      JWT_SECRET: change-this-secret-in-production
+      JWT_EXPIRES_IN: 2h
+      AUTH_USER: nirvana-admin
+      AUTH_PASSWORD: nirvana-2026
+      POSTGRES_URL: postgresql://nirvana:nirvana@postgres:5432/nirvana
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - '4000:4000'
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: web-runner
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:4000
+    depends_on:
+      - backend
+    ports:
+      - '3000:3000'
+
+volumes:
+  postgres_data:
+  redis_data:

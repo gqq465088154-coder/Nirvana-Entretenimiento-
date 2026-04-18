@@ -1,0 +1,153 @@
+.page {
+  min-height: 100vh;
+  padding: 1.25rem;
+  background: radial-gradient(circle at top, #1d1b2a, #09080f 70%);
+  color: #f8f7ff;
+  font-family: 'Inter', Arial, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.logoWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.logoMark {
+  font-size: 1.25rem;
+  animation: phoenix-pulse 2.8s ease-in-out infinite;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  font-weight: 600;
+}
+
+.nav a {
+  color: #f8f7ff;
+  text-decoration: none;
+  opacity: 0.9;
+}
+
+.nav a:hover {
+  opacity: 1;
+  color: #ffb347;
+}
+
+.localeSwitcher {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.localeSwitcher select {
+  background: #1d1b2a;
+  color: #f8f7ff;
+  border: 1px solid #ff5b2e;
+  border-radius: 0.5rem;
+  padding: 0.35rem 0.5rem;
+}
+
+.hero {
+  margin-top: 1.75rem;
+  text-align: center;
+}
+
+.badge {
+  display: inline-flex;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 179, 71, 0.45);
+  color: #ffd166;
+  font-size: 0.82rem;
+  margin-bottom: 0.9rem;
+}
+
+.hero h1 {
+  margin: 0.4rem 0;
+  font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+}
+
+.hero p {
+  max-width: 720px;
+  margin: 0.8rem auto 1rem;
+  color: #d6d3e6;
+}
+
+.heroActions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.primaryBtn,
+.secondaryBtn {
+  border: none;
+  border-radius: 999px;
+  padding: 0.7rem 1.35rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primaryBtn {
+  background: linear-gradient(135deg, #ff5b2e 0%, #ff8a00 45%, #ffd166 100%);
+  color: #09080f;
+  box-shadow: 0 0 30px rgba(255, 91, 46, 0.55);
+}
+
+.secondaryBtn {
+  background: transparent;
+  color: #f8f7ff;
+  border: 1px solid rgba(255, 179, 71, 0.45);
+}
+
+.section {
+  margin-top: 2rem;
+}
+
+.section h2 {
+  margin-bottom: 0.8rem;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  border: 1px solid rgba(255, 138, 0, 0.42);
+  border-radius: 0.8rem;
+  padding: 1rem;
+  background: linear-gradient(170deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 640px) {
+  .page { padding: 1rem; }
+  .header { align-items: flex-start; }
+  .nav { width: 100%; overflow-x: auto; }
+}
+
+@keyframes phoenix-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(255, 138, 0, 0.1));
+  }
+  50% {
+    transform: scale(1.14);
+    filter: drop-shadow(0 0 16px rgba(255, 138, 0, 0.75));
+  }
+}

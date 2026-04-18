@@ -11,6 +11,11 @@
     "build:web": "npm --workspace apps/web run build",
     "lint:web": "npm --workspace apps/web run lint",
     "dev:backend": "npm --workspace backend run dev",
-    "start:backend": "npm --workspace backend run start"
+    "start:backend": "npm --workspace backend run start",
+    "check": "./check.sh",
+    "install:stack": "./install.sh",
+    "pair": "./pair.sh",
+    "deploy": "./deploy.sh",
+    "release:zip": "./create-release-zip.sh"
   }
 }
