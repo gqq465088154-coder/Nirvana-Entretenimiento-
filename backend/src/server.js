@@ -1,4 +1,5 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const { env } = require('./config/env');
 const { connectRedis } = require('./db/redis');
@@ -11,6 +12,18 @@ const { errorHandler, notFoundHandler } = require('./middleware/error-handler');
 const { logger } = require('./utils/logger');
 
 const app = express();
+const authLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false
+});
+const protectedApiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 120,
+  standardHeaders: true,
+  legacyHeaders: false
+});
 
 app.use(helmet());
 app.use(express.json({ limit: '1mb' }));
@@ -20,9 +33,9 @@ app.use((req, _res, next) => {
 });
 
 app.use('/api/health', healthRouter);
-app.use('/api/auth', authRouter);
-app.use('/api/sportsbook', authenticateJwt, sportsbookRouter);
-app.use('/api/casino', authenticateJwt, casinoRouter);
+app.use('/api/auth', authLimiter, authRouter);
+app.use('/api/sportsbook', protectedApiLimiter, authenticateJwt, sportsbookRouter);
+app.use('/api/casino', protectedApiLimiter, authenticateJwt, casinoRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
