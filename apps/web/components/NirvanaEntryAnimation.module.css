@@ -1,0 +1,132 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  background: #09080f;
+  pointer-events: none;
+  animation: overlayExit 3.8s ease forwards;
+}
+
+.darkPhase,
+.flamePhase,
+.burstPhase {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.darkPhase {
+  width: 100vmax;
+  height: 100vmax;
+  background: radial-gradient(circle, rgb(0 0 0 / 0%) 0%, #09080f 68%);
+  animation: darkStart 0.8s ease forwards;
+}
+
+.flamePhase {
+  width: min(66vmin, 580px);
+  height: min(66vmin, 580px);
+  background: radial-gradient(circle, rgb(255 209 102 / 90%) 0%, rgb(255 91 46 / 72%) 32%, rgb(9 8 15 / 0%) 70%);
+  filter: blur(3px);
+  opacity: 0;
+  animation: flamesRise 1.3s ease 0.75s forwards;
+}
+
+.phoenixPhase {
+  font-size: clamp(3rem, 12vmin, 8rem);
+  opacity: 0;
+  transform: scale(0.45) rotate(-8deg);
+  filter: drop-shadow(0 0 24px rgb(255 138 0 / 72%));
+  animation: phoenixReveal 1s ease 1.8s forwards;
+}
+
+.burstPhase {
+  width: 12px;
+  height: 12px;
+  background: #ffd166;
+  box-shadow: 0 0 0 0 rgb(255 209 102 / 65%);
+  opacity: 0;
+  animation: burstBlast 0.8s ease 2.7s forwards;
+}
+
+.caption {
+  margin-top: min(48vmin, 330px);
+  letter-spacing: 0.26em;
+  color: #ffd166;
+  opacity: 0;
+  font-weight: 700;
+  animation: captionFade 1.2s ease 1.9s forwards;
+}
+
+@keyframes darkStart {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.72;
+  }
+}
+
+@keyframes flamesRise {
+  from {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes phoenixReveal {
+  0% {
+    transform: scale(0.45) rotate(-8deg);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.05) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.85;
+  }
+}
+
+@keyframes burstBlast {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+    box-shadow: 0 0 0 0 rgb(255 209 102 / 65%);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 35px rgb(255 209 102 / 45%);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+    box-shadow: 0 0 0 140px rgb(255 209 102 / 0%);
+  }
+}
+
+@keyframes captionFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.8;
+  }
+}
+
+@keyframes overlayExit {
+  0%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}

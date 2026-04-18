@@ -1,9 +1,11 @@
+import styles from './PhoenixRebirth.module.css';
+
 export default function PhoenixRebirth() {
   return (
-    <div className="phoenix-rebirth" aria-label="phoenix-rebirth-animation">
-      <div className="phoenix-core">🔥</div>
-      <div className="phoenix-ring phoenix-ring-one" />
-      <div className="phoenix-ring phoenix-ring-two" />
+    <div className={styles.wrapper} aria-label="phoenix-rebirth-animation">
+      <div className={styles.core}>🕊️</div>
+      <div className={styles.ring} />
+      <div className={`${styles.ring} ${styles.ringTwo}`} />
     </div>
   );
 }
