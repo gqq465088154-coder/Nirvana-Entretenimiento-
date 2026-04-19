@@ -10,6 +10,7 @@ const healthRoutes = require('./routes/health');
 const authRoutes = require('./routes/auth');
 const sportsbookRoutes = require('./routes/sportsbook');
 const casinoRoutes = require('./routes/casino');
+const { metricsRouter, metricsMiddleware } = require('./routes/metrics');
 
 const app = express();
 const authApiLimiter = rateLimit({
@@ -28,8 +29,11 @@ app.use(
   })
 );
 
+app.use(metricsMiddleware);
+
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/metrics', metricsRouter);
 app.use('/api/sportsbook', authApiLimiter, authMiddleware, sportsbookRoutes);
 app.use('/api/casino', authApiLimiter, authMiddleware, casinoRoutes);
 

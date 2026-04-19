@@ -1,33 +1,38 @@
-const levels = {
-  info: 'INFO',
-  warn: 'WARN',
-  error: 'ERROR'
-};
+const { createLogger, format, transports } = require('winston');
+const path = require('path');
 
-function log(level, message, meta) {
-  const entry = {
-    level: levels[level] || levels.info,
-    timestamp: new Date().toISOString(),
-    message,
-    ...(meta ? { meta } : {})
-  };
+const logDir = process.env.LOG_DIR || 'logs';
 
-  const line = JSON.stringify(entry);
-  if (level === 'error') {
-    console.error(line);
-    return;
-  }
+const logger = createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: format.combine(
+    format.timestamp(),
+    format.json()
+  ),
+  defaultMeta: { service: 'nirvana-backend' },
+  transports: [
+    new transports.Console({
+      format: format.combine(
+        format.timestamp(),
+        format.json()
+      )
+    })
+  ]
+});
 
-  if (level === 'warn') {
-    console.warn(line);
-    return;
-  }
-
-  console.log(line);
+/* In production, also write to rotating log files */
+if (process.env.NODE_ENV === 'production') {
+  logger.add(new transports.File({
+    filename: path.join(logDir, 'error.log'),
+    level: 'error',
+    maxsize: 10 * 1024 * 1024,
+    maxFiles: 5
+  }));
+  logger.add(new transports.File({
+    filename: path.join(logDir, 'combined.log'),
+    maxsize: 10 * 1024 * 1024,
+    maxFiles: 10
+  }));
 }
 
-module.exports = {
-  info: (message, meta) => log('info', message, meta),
-  warn: (message, meta) => log('warn', message, meta),
-  error: (message, meta) => log('error', message, meta)
-};
+module.exports = logger;
