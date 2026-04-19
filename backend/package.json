@@ -6,9 +6,12 @@
   "scripts": {
     "dev": "node src/server.js",
     "start": "node src/server.js",
-    "test": "jest --forceExit --detectOpenHandles"
+    "test": "jest --forceExit --detectOpenHandles",
+    "migrate": "node src/migrations/001_initial.js up",
+    "migrate:down": "node src/migrations/001_initial.js down"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cors": "2.8.5",
     "express": "4.22.1",
     "express-rate-limit": "7.4.1",
