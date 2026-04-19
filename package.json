@@ -1,7 +1,7 @@
 {
   "name": "nirvana-entretenimiento",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "workspaces": [
     "apps/web",
     "backend"
@@ -9,8 +9,17 @@
   "scripts": {
     "dev:web": "npm --workspace apps/web run dev",
     "build:web": "npm --workspace apps/web run build",
+    "start:web": "npm --workspace apps/web run start",
     "lint:web": "npm --workspace apps/web run lint",
     "dev:backend": "npm --workspace backend run dev",
-    "start:backend": "npm --workspace backend run start"
+    "start:backend": "npm --workspace backend run start",
+    "test:backend": "npm --workspace backend run test",
+    "test:web": "npm --workspace apps/web run test",
+    "test": "npm --workspace backend run test && npm --workspace apps/web run test",
+    "check": "./check.sh",
+    "install:runtime": "./install.sh",
+    "pair": "./pair.sh",
+    "deploy": "./deploy.sh",
+    "release:zip": "./create-release-zip.sh"
   }
 }

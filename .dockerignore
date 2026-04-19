@@ -1,0 +1,9 @@
+.git
+.github
+node_modules
+**/node_modules
+apps/web/.next
+coverage
+dist
+release
+*.zip

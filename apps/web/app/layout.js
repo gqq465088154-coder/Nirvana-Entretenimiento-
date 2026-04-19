@@ -1,8 +1,8 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'Nirvana Entretenimiento | Phoenix 2026',
-  description: 'Phoenix style World Cup 2026 campaign homepage'
+  title: 'Nirvana Entretenimiento | Phoenix World Cup 2026',
+  description: 'Phoenix-themed multilingual World Cup 2026 campaign portal'
 };
 
 export default function RootLayout({ children }) {
