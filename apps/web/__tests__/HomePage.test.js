@@ -14,7 +14,12 @@ describe('HomePage', () => {
     expect(screen.getByText('Home')).toBeInTheDocument();
     expect(screen.getByText('World Cup')).toBeInTheDocument();
     expect(screen.getByText('Games')).toBeInTheDocument();
-    expect(screen.getByText('Tickets')).toBeInTheDocument();
+
+    const navLinks = screen.getAllByRole('link');
+    const casinoNavLink = navLinks.find((link) => link.textContent === 'Casino' && link.getAttribute('href') === '/casino');
+    expect(casinoNavLink).toBeTruthy();
+
+    expect(screen.getByText('👤')).toBeInTheDocument();
   });
 
   it('renders the hero section with title', () => {

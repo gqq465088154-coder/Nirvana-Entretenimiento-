@@ -41,8 +41,9 @@ export default function HomePage() {
           <nav className={styles.navLinks}>
             <a href="#home">{t.navHome}</a>
             <a href="#campaign">{t.navCampaign}</a>
-            <a href="#games">{t.navGames}</a>
-            <a href="#tickets">{t.navTickets}</a>
+            <a href="/sportsbook">{t.navGames}</a>
+            <a href="/casino">Casino</a>
+            <a href="/profile">👤</a>
           </nav>
 
           <label className={styles.localeSwitcher}>
