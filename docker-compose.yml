@@ -3,14 +3,17 @@ services:
   postgres:
     image: postgres:16.4-alpine
     restart: unless-stopped
-    environment:
-      POSTGRES_DB: nirvana
-      POSTGRES_USER: nirvana
-      POSTGRES_PASSWORD: nirvana
+    env_file: docker.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-nirvana} -d ${POSTGRES_DB:-nirvana}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
   redis:
     image: redis:7.4.2-alpine
@@ -20,6 +23,12 @@ services:
       - redis_data:/data
     ports:
       - '6379:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
 
   backend:
     build:
@@ -27,20 +36,20 @@ services:
       dockerfile: Dockerfile
       target: backend-runner
     restart: unless-stopped
-    environment:
-      NODE_ENV: production
-      PORT: 4000
-      JWT_SECRET: change-this-secret-in-production
-      JWT_EXPIRES_IN: 2h
-      AUTH_USER: nirvana-admin
-      AUTH_PASSWORD: nirvana-2026
-      POSTGRES_URL: postgresql://nirvana:nirvana@postgres:5432/nirvana
-      REDIS_URL: redis://redis:6379
+    env_file: docker.env
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     ports:
       - '4000:4000'
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://localhost:4000/api/health || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
 
   web:
     build:
@@ -52,9 +61,16 @@ services:
       NODE_ENV: production
       NEXT_PUBLIC_API_BASE_URL: http://localhost:4000
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     ports:
       - '3000:3000'
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://localhost:3000 || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
 
 volumes:
   postgres_data:

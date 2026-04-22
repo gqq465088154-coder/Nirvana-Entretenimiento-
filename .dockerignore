@@ -6,6 +6,7 @@ node_modules
 **/.next
 .env
 **/.env
+docker.env
 *.log
 coverage
 dist

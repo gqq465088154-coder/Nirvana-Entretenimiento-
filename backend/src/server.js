@@ -50,5 +50,5 @@ async function startServer() {
 
 startServer().catch((error) => {
   logger.error('server_start_failed', { error: error.message });
-  process.exitCode = 1;
+  process.exit(1);
 });
