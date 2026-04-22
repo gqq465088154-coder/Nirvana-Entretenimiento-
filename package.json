@@ -13,11 +13,8 @@
     "lint:web": "npm --workspace apps/web run lint",
     "dev:backend": "npm --workspace backend run dev",
     "start:backend": "npm --workspace backend run start",
-    "test:backend": "npm --workspace backend run test",
-    "test:web": "npm --workspace apps/web run test",
-    "test": "npm --workspace backend run test && npm --workspace apps/web run test",
     "check": "./check.sh",
-    "install:runtime": "./install.sh",
+    "install:stack": "./install.sh",
     "pair": "./pair.sh",
     "deploy": "./deploy.sh",
     "release:zip": "./create-release-zip.sh"

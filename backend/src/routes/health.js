@@ -1,32 +1,26 @@
 const express = require('express');
-const { checkDatabase } = require('../config/database');
-const { checkRedis } = require('../config/redis');
+const { checkPostgresHealth } = require('../db/postgres');
+const { checkRedisHealth } = require('../db/redis');
 
-const router = express.Router();
+const healthRouter = express.Router();
 
-router.get('/', async (_req, res) => {
-  const checks = {};
-
+healthRouter.get('/', async (_req, res, next) => {
   try {
-    checks.postgres = await checkDatabase();
+    const [postgres, redis] = await Promise.all([checkPostgresHealth(), checkRedisHealth()]);
+    const isHealthy = postgres.status === 'up' && redis.status === 'up';
+
+    return res.status(isHealthy ? 200 : 503).json({
+      status: isHealthy ? 'ok' : 'degraded',
+      service: 'nirvana-backend',
+      timestamp: new Date().toISOString(),
+      checks: {
+        postgres,
+        redis
+      }
+    });
   } catch (error) {
-    checks.postgres = { connected: false, reason: error.message };
+    return next(error);
   }
-
-  try {
-    checks.redis = await checkRedis();
-  } catch (error) {
-    checks.redis = { connected: false, reason: error.message };
-  }
-
-  const healthy = Object.values(checks).every((item) => item.connected || item.reason?.endsWith('_NOT_SET'));
-
-  res.status(healthy ? 200 : 503).json({
-    status: healthy ? 'ok' : 'degraded',
-    service: 'nirvana-backend',
-    timestamp: new Date().toISOString(),
-    checks
-  });
 });
 
-module.exports = router;
+module.exports = { healthRouter };

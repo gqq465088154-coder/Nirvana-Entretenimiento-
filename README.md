@@ -1,150 +1,112 @@
-# Nirvana Entretenimiento (Production Monorepo)
+# Nirvana-Entretenimiento-
 
-Phoenix-themed FIFA World Cup 2026 portal with a Next.js web app, Express backend, Docker deployment, and PocketClaw pairing scripts.
+生产级 Monorepo，包含 Phoenix 火凤凰世界杯门户、Node.js API、PocketClaw 配对脚本与 Docker 部署能力。
 
-## Project Structure
+## 目录结构
 
 ```text
 .
-├── apps/
-│   └── web/                    # Next.js frontend (theme/i18n/entry animation)
-├── backend/                    # Node.js + Express API (JWT/sportsbook/casino)
-├── infra/
-│   └── nginx/                  # Nginx reverse proxy config (HTTP/HTTPS)
-├── check.sh                    # Environment checks (Docker/Node/Git)
-├── install.sh                  # Install dependencies + ClawPilot
-├── runtime-check.sh            # Runtime readiness check (OpenClaw/Hermes)
-├── pair.sh                     # Generate pairing code
-├── deploy.sh                   # One-command Docker deployment
-├── create-release-zip.sh       # Build runnable ZIP package
-├── docker-compose.yml          # PostgreSQL + Redis + backend + web + nginx
-├── Dockerfile                  # Multi-stage build
-└── README.md
+├── apps/web/                     # Next.js 前端
+│   ├── app/                      # 页面与样式模块
+│   ├── components/               # 涅槃重生入场动画组件
+│   ├── lib/i18n/                 # 多语言（zh-CN/es-AR/es-CL/en-US/pt-BR）
+│   ├── lib/theme/                # Phoenix 主题 tokens
+│   ├── .env.example
+│   └── tsconfig.json
+├── backend/                      # Node.js + Express API
+│   ├── src/config/               # 环境变量
+│   ├── src/db/                   # PostgreSQL / Redis 连接
+│   ├── src/middleware/           # JWT 与错误处理中间件
+│   ├── src/routes/               # health/auth/sportsbook/casino
+│   └── .env.example
+├── check.sh                      # 系统环境检查
+├── install.sh                    # 依赖 + ClawPilot 安装
+├── pair.sh                       # OpenClaw/Hermes 配对码生成
+├── deploy.sh                     # Docker 一键部署
+├── runtime-check.sh              # 运行时可用性检查
+├── create-release-zip.sh         # 发布 ZIP 打包脚本
+├── docker-compose.yml            # PostgreSQL + Redis + API + Web
+├── Dockerfile                    # 多阶段构建
+└── package.json                  # Monorepo 脚本
 ```
 
-## Quick Start (Direct Run)
+## 功能清单
+
+### Web 前端（apps/web）
+- Phoenix 主题系统（colors/typography/shadows/animations）
+- 涅槃重生 3.8 秒入场动画（黑暗 → 火焰 → 凤凰爆发 → 淡入）
+- 多语言国际化：`zh-CN` `es-AR` `es-CL` `en-US` `pt-BR`
+- 2026 世界杯首页：导航、凤凰 Logo、宣传 Hero、游戏卡片
+- CSS Modules 响应式样式
+
+### 后端（backend）
+- JWT 登录与鉴权中间件
+- 体育博彩 API：`/api/sportsbook/markets` `POST /api/sportsbook/bets`
+- Casino API：`/api/casino/games` `POST /api/casino/spin`
+- PostgreSQL 与 Redis 配置 + 健康检测：`GET /api/health`
+- 日志与统一错误处理
+
+### 部署与配对脚本
+- `./check.sh`：检查 Docker / Node.js / Git
+- `./install.sh`：安装项目依赖和 ClawPilot
+- `./pair.sh`：生成配对码（OpenClaw/Hermes）
+- `./deploy.sh`：Docker 一键部署
+- `./runtime-check.sh`：检查 Web/API 可用性
+- `./create-release-zip.sh`：打包发布 ZIP
+
+## 快速开始
 
 ```bash
-./check.sh
-./install.sh
-./pair.sh openclaw
-./deploy.sh
-```
+# 1) 安装依赖
+npm install
 
-Access:
-- Web: http://localhost:3000
-- API health: http://localhost:4000/api/health
-- Nginx proxy: http://localhost (port 80)
-
-## Web Features (`apps/web`)
-
-- Phoenix fire theme system: colors, typography, shadows, animations
-- 3.8s Nirvana entry animation (dark → flame → phoenix → burst → fade)
-- i18n locales: `zh-CN`, `es-AR`, `es-CL`, `en-US`, `pt-BR`
-- FIFA World Cup 2026 campaign homepage with nav, logo, promo blocks, game cards
-- **Sportsbook page** (`/sportsbook`) — live events with bet placement UI
-- **Casino page** (`/casino`) — game catalog with session launch
-- **User profile page** (`/profile`) — auth status and navigation
-- API client library (`lib/api/client.js`) for backend integration
-- Next.js standalone output for production containers
-- `.env.example` and `tsconfig.json` included
-
-## Backend Features (`backend`)
-
-- **User registration** (`POST /api/auth/register`) — bcrypt password hashing
-- **User login** (`POST /api/auth/login`) — email/password authentication
-- **Token refresh** (`POST /api/auth/refresh`) — rotating refresh tokens
-- **Demo token** (`POST /api/auth/token`) — backward-compatible demo endpoint
-- JWT middleware (`Authorization: Bearer <token>`)
-- API routes:
-  - `GET /api/sportsbook/events`
-  - `POST /api/sportsbook/bets`
-  - `GET /api/casino/games`
-  - `POST /api/casino/session`
-  - `GET /api/health`
-  - `GET /api/metrics` — Prometheus metrics endpoint
-- PostgreSQL pool configuration (`pg`) with schema migrations
-- Redis client configuration (`redis`)
-- **Winston** structured logging with file output in production
-- **Prometheus** metrics (request duration, request count, Node.js defaults)
-- Helmet/CORS/Morgan + centralized error handling
-- Rate limiting on authenticated API surfaces
-- Production environment variable validation (fails on missing JWT_SECRET/DATABASE_URL)
-
-## Database
-
-```bash
-# Run migrations (requires DATABASE_URL)
-npm --workspace backend run migrate
-
-# Rollback
-npm --workspace backend run migrate:down
-```
-
-Tables: `users`, `refresh_tokens`, `bets`, `game_sessions`
-
-## Testing
-
-```bash
-# Run all tests (42 total)
-npm test
-
-# Backend tests only (19 tests — Jest + Supertest)
-npm run test:backend
-
-# Frontend tests only (23 tests — React Testing Library)
-npm run test:web
-```
-
-## Environment Variables
-
-Backend example: `backend/.env.example`
-
-Web example: `apps/web/.env.example`
-
-**Production requirements:**
-- `JWT_SECRET` must be set to a strong random value (not the default)
-- `DATABASE_URL` must point to a real PostgreSQL instance
-- `REDIS_URL` should point to a Redis instance
-- `NODE_ENV=production` enables file logging and env validation
-
-## Build and Run Locally
-
-```bash
-npm ci
-npm run build:web
+# 2) 本地开发
 npm run dev:web
 npm run dev:backend
-```
 
-## Docker Deployment
+# 3) 系统检查
+./check.sh
 
-```bash
+# 4) 安装部署依赖
+./install.sh
+
+# 5) 生成配对码（默认 OpenClaw）
+./pair.sh
+# 或
+PAIR_RUNTIME=Hermes ./pair.sh
+
+# 6) Docker 一键部署
 ./deploy.sh
 ```
 
-Services: PostgreSQL 16, Redis 7, Backend API, Web frontend, Nginx reverse proxy.
+## 环境变量
 
-## Nginx / SSL
+复制示例配置：
 
-The nginx config is at `infra/nginx/default.conf`. It proxies:
-- `/api/*` → backend:4000
-- `/*` → web:3000
+```bash
+cp apps/web/.env.example apps/web/.env
+cp backend/.env.example backend/.env
+```
 
-To enable HTTPS, uncomment the SSL server block and mount your certificates.
+## API 快速验证
 
-## CI/CD
+```bash
+# 获取 token
+curl -s http://localhost:4000/api/auth/login \
+  -H 'content-type: application/json' \
+  -d '{"username":"nirvana-admin","password":"nirvana-2026"}'
 
-GitHub Actions workflow (`.github/workflows/ci.yml`) runs on push/PR to main:
-1. **Lint** — `next lint`
-2. **Test Backend** — Jest + Supertest
-3. **Test Web** — React Testing Library
-4. **Build** — Next.js production build (after all checks pass)
+# 用 token 访问受保护接口
+curl -s http://localhost:4000/api/sportsbook/markets -H "authorization: Bearer <TOKEN>"
+```
 
-## Create Runnable ZIP
+## 生成可运行 ZIP
 
 ```bash
 ./create-release-zip.sh
+# 输出: release/Nirvana-Entretenimiento-YYYYmmdd-HHMMSS.zip
 ```
 
-The ZIP is generated in `release/` and includes this README and startup scripts.
+## License
+
+MIT

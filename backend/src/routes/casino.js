@@ -1,31 +1,37 @@
+const crypto = require('crypto');
 const express = require('express');
 
-const router = express.Router();
+const casinoRouter = express.Router();
 
-router.get('/games', (_req, res) => {
-  res.status(200).json({
-    games: [
-      { id: 'phoenix-slots', name: 'Phoenix Stadium Slots', category: 'slots', rtp: 96.2 },
-      { id: 'golden-penalty', name: 'Golden Penalty Roulette', category: 'roulette', rtp: 97.1 },
-      { id: 'rebirth-blackjack', name: 'Rebirth Blackjack', category: 'table', rtp: 99.0 }
-    ]
-  });
+const games = [
+  { id: 'phoenix-spin', name: 'Phoenix Spin', minWager: 1 },
+  { id: 'ember-roulette', name: 'Ember Roulette', minWager: 5 },
+  { id: 'nightjack', name: 'Nightjack', minWager: 2 }
+];
+
+casinoRouter.get('/games', (_req, res) => {
+  res.status(200).json({ games });
 });
 
-router.post('/session', (req, res, next) => {
-  const { gameId } = req.body || {};
-  if (!gameId) {
-    const error = new Error('gameId is required');
-    error.status = 400;
-    return next(error);
+casinoRouter.post('/spin', (req, res) => {
+  const { gameId, wager } = req.body;
+  const game = games.find((item) => item.id === gameId);
+
+  if (!game || !Number.isFinite(Number(wager)) || Number(wager) < game.minWager) {
+    return res.status(400).json({ error: 'invalid_game_or_wager' });
   }
 
-  return res.status(201).json({
-    sessionId: `casino_${Date.now()}`,
+  const multiplier = Math.random() < 0.35 ? Number((1 + Math.random() * 2.5).toFixed(2)) : 0;
+  const payout = Number((Number(wager) * multiplier).toFixed(2));
+
+  return res.status(200).json({
+    spinId: crypto.randomUUID(),
     gameId,
-    player: req.user?.sub || 'unknown',
-    status: 'ready'
+    wager: Number(wager),
+    multiplier,
+    payout,
+    result: payout > 0 ? 'win' : 'lose'
   });
 });
 
-module.exports = router;
+module.exports = { casinoRouter };

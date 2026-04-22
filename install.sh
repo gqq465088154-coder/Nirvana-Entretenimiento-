@@ -1,18 +1,36 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CLAWPILOT_VERSION="1.2.0"
+info() { echo "[INFO] $*"; }
+warn() { echo "[WARN] $*"; }
+error() { echo "[ERROR] $*" >&2; }
 
-echo "[INFO] Installing workspace dependencies..."
-cd "$ROOT_DIR"
-npm ci
+CLAWPILOT_VERSION="${CLAWPILOT_VERSION:-1.0.0}"
 
-echo "[INFO] Installing ClawPilot @rethinkingstudio/clawpilot@$CLAWPILOT_VERSION ..."
-if npm install -g "@rethinkingstudio/clawpilot@$CLAWPILOT_VERSION"; then
-  echo "[OK] ClawPilot installed successfully."
-else
-  echo "[WARN] ClawPilot global install failed. You can still run local project deployment." >&2
-fi
+main() {
+  info "Installing project dependencies"
+  npm ci
 
-echo "[DONE] Installation completed."
+  # Create docker.env from example if it doesn't exist yet.
+  if [[ ! -f docker.env ]]; then
+    if [[ -f docker.env.example ]]; then
+      cp docker.env.example docker.env
+      warn "docker.env created from docker.env.example."
+      warn "IMPORTANT: Edit docker.env and replace all placeholder secrets before deploying."
+    else
+      warn "docker.env.example not found – skipping docker.env creation."
+    fi
+  else
+    info "docker.env already exists – skipping creation."
+  fi
+
+  info "Installing ClawPilot @rethinkingstudio/clawpilot@${CLAWPILOT_VERSION}"
+  if ! npm install -g "@rethinkingstudio/clawpilot@${CLAWPILOT_VERSION}"; then
+    warn "ClawPilot installation failed. You can retry with a valid CLAWPILOT_VERSION env var."
+    warn "Example: CLAWPILOT_VERSION=1.2.3 ./install.sh"
+  fi
+
+  info "Installation step completed"
+}
+
+main "$@"

@@ -1,29 +1,38 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
-RUNTIME="${1:-openclaw}"
-RUNTIME_LC="$(echo "$RUNTIME" | tr '[:upper:]' '[:lower:]')"
+info()  { echo "[INFO]  $*"; }
+warn()  { echo "[WARN]  $*"; }
+error() { echo "[ERROR] $*" >&2; }
 
-if [[ "$RUNTIME_LC" != "openclaw" && "$RUNTIME_LC" != "hermes" ]]; then
-  echo "[ERROR] Unsupported runtime '$RUNTIME'. Use openclaw or hermes." >&2
-  exit 1
-fi
+MAX_RETRIES="${RUNTIME_CHECK_RETRIES:-5}"
+RETRY_DELAY="${RUNTIME_CHECK_DELAY:-4}"
 
-echo "[INFO] Runtime selected: $RUNTIME_LC"
+# Probe a URL up to MAX_RETRIES times with a delay between attempts.
+check_endpoint() {
+  local url="$1"
+  local label="${2:-$1}"
+  local attempt=1
 
-if ! command -v node >/dev/null 2>&1; then
-  echo "[ERROR] Node.js is required" >&2
-  exit 1
-fi
+  while (( attempt <= MAX_RETRIES )); do
+    if curl --silent --fail --max-time 5 "$url" >/dev/null 2>&1; then
+      info "$label is reachable ✓"
+      return 0
+    fi
+    warn "Attempt ${attempt}/${MAX_RETRIES}: $label not yet reachable, retrying in ${RETRY_DELAY}s …"
+    sleep "$RETRY_DELAY"
+    attempt=$(( attempt + 1 ))
+  done
 
-if ! command -v docker >/dev/null 2>&1; then
-  echo "[ERROR] Docker is required" >&2
-  exit 1
-fi
+  error "$label is not reachable after ${MAX_RETRIES} attempts"
+  return 1
+}
 
-if ! docker info >/dev/null 2>&1; then
-  echo "[ERROR] Docker daemon is not running" >&2
-  exit 1
-fi
+main() {
+  info "Running runtime endpoint checks"
+  check_endpoint "http://localhost:3000"    "Web  (http://localhost:3000)"
+  check_endpoint "http://localhost:4000/api/health" "API  (http://localhost:4000/api/health)"
+  info "All runtime checks passed ✓"
+}
 
-echo "[OK] Runtime environment is ready for $RUNTIME_LC."
+main "$@"

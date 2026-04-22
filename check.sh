@@ -1,45 +1,37 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+info() { echo "[INFO] $*"; }
+error() { echo "[ERROR] $*" >&2; }
 
-fail() {
-  echo "[ERROR] $1" >&2
-  exit 1
-}
-
-pass() {
-  echo "[OK] $1"
-}
-
-check_cmd() {
-  local cmd="$1"
-  local name="$2"
-  if command -v "$cmd" >/dev/null 2>&1; then
-    pass "$name detected: $(command -v "$cmd")"
-  else
-    fail "$name is required but not installed"
+check_command() {
+  local command_name="$1"
+  if ! command -v "$command_name" >/dev/null 2>&1; then
+    error "Missing required command: $command_name"
+    return 1
   fi
+  info "$command_name detected: $(command -v "$command_name")"
 }
 
-echo "Running environment check from: $ROOT_DIR"
-check_cmd git "Git"
-check_cmd node "Node.js"
-check_cmd npm "npm"
-check_cmd docker "Docker"
+main() {
+  info "Running system checks for Nirvana deployment"
+  check_command docker
+  check_command node
+  check_command npm
+  check_command git
+  check_command curl
+  check_command zip
 
-if docker compose version >/dev/null 2>&1; then
-  pass "Docker Compose plugin detected"
-elif command -v docker-compose >/dev/null 2>&1; then
-  pass "docker-compose binary detected"
-else
-  fail "Docker Compose is required"
-fi
+  if ! docker compose version >/dev/null 2>&1; then
+    error "docker compose plugin is required"
+    return 1
+  fi
 
-if docker info >/dev/null 2>&1; then
-  pass "Docker daemon is running"
-else
-  fail "Docker daemon is not running"
-fi
+  info "Node.js version: $(node --version)"
+  info "npm version: $(npm --version)"
+  info "Docker version: $(docker --version)"
+  info "Docker Compose version: $(docker compose version)"
+  info "System checks passed"
+}
 
-echo "Environment check completed successfully."
+main "$@"

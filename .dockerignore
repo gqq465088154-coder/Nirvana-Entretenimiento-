@@ -1,9 +1,13 @@
 .git
+.gitignore
 .github
 node_modules
 **/node_modules
-apps/web/.next
+**/.next
+.env
+**/.env
+docker.env
+*.log
 coverage
 dist
 release
-*.zip
