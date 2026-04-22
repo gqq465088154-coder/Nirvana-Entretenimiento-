@@ -38,6 +38,8 @@ COPY apps/web/package.json ./apps/web/package.json
 COPY --from=deps /app/node_modules ./node_modules
 # Next.js built output (no source needed for `next start`)
 COPY --from=web-builder /app/apps/web/.next ./apps/web/.next
+# Runtime config (poweredByHeader, env vars, etc.)
+COPY apps/web/next.config.mjs ./apps/web/next.config.mjs
 # Static public assets
 COPY apps/web/public ./apps/web/public
 EXPOSE 3000

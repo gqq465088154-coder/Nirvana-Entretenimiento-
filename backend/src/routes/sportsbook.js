@@ -15,7 +15,7 @@ sportsbookRouter.get('/markets', (_req, res) => {
 sportsbookRouter.post('/bets', (req, res) => {
   const { marketId, selection, stake } = req.body;
 
-  if (!marketId || !selection || Number(stake) <= 0) {
+  if (!marketId || !selection || !Number.isFinite(Number(stake)) || Number(stake) <= 0) {
     return res.status(400).json({ error: 'invalid_bet_payload' });
   }
 

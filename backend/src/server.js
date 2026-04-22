@@ -49,6 +49,6 @@ async function startServer() {
 }
 
 startServer().catch((error) => {
-  logger.error('server_start_failed', { error: error.message });
+  logger.error('server_start_failed', { error: error.message, stack: error.stack, code: error.code });
   process.exit(1);
 });

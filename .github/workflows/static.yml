@@ -66,7 +66,7 @@ jobs:
 
           # Confirm health endpoint responds.
           # 5xx is acceptable here because postgres/redis are not available in CI.
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4000/api/health)
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4000/api/health || true)
           echo "Health status: $STATUS"
           [[ "$STATUS" =~ ^[25] ]] || { echo "Health endpoint did not respond"; exit 1; }
 

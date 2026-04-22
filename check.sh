@@ -19,6 +19,8 @@ main() {
   check_command node
   check_command npm
   check_command git
+  check_command curl
+  check_command zip
 
   if ! docker compose version >/dev/null 2>&1; then
     error "docker compose plugin is required"

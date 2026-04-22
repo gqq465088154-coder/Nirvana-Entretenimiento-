@@ -17,7 +17,7 @@ casinoRouter.post('/spin', (req, res) => {
   const { gameId, wager } = req.body;
   const game = games.find((item) => item.id === gameId);
 
-  if (!game || Number(wager) < game.minWager) {
+  if (!game || !Number.isFinite(Number(wager)) || Number(wager) < game.minWager) {
     return res.status(400).json({ error: 'invalid_game_or_wager' });
   }
 

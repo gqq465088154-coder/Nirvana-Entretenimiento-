@@ -23,7 +23,11 @@ main() {
     -x "node_modules/*" \
     -x "apps/web/.next/*" \
     -x "release/*" \
-    -x "*.DS_Store"
+    -x "*.DS_Store" \
+    -x "docker.env" \
+    -x "**/.env" \
+    -x "*.pem" \
+    -x "*.key"
 
   info "Release package created successfully"
   info "Output: $OUTPUT_FILE"

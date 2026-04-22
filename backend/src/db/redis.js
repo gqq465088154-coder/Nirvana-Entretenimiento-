@@ -6,7 +6,13 @@ const redisClient = createClient({
   url: env.redisUrl,
   socket: {
     connectTimeout: 2000,
-    reconnectStrategy: () => false
+    // Reconnect with exponential backoff, capped at 5 retries (max ~16 s delay).
+    reconnectStrategy: (retries) => {
+      if (retries >= 5) {
+        return false;
+      }
+      return Math.min(retries * 500, 2000);
+    }
   }
 });
 let redisReady = false;
