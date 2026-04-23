@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { isLoggedIn, logout } from '../../lib/api/client';
 import { phoenixTheme } from '../../lib/theme/phoenixTheme';
 
@@ -21,7 +22,7 @@ export default function ProfilePage() {
       <h1 style={{ fontFamily: phoenixTheme.typography.heading, color: phoenixTheme.colors.flame }}>
         👤 User Profile
       </h1>
-      <p><a href="/" style={{ color: phoenixTheme.colors.glow }}>← Back to Home</a></p>
+      <p><Link href="/" style={{ color: phoenixTheme.colors.glow }}>← Back to Home</Link></p>
 
       <div style={{ background: phoenixTheme.colors.ash, padding: '2rem', borderRadius: '12px', maxWidth: '500px', boxShadow: phoenixTheme.shadows.card }}>
         {loggedIn ? (
@@ -29,12 +30,12 @@ export default function ProfilePage() {
             <p style={{ color: phoenixTheme.colors.glow }}>✅ You are logged in</p>
             <p style={{ color: '#aaa' }}>Token stored in local storage. Use the API to manage your bets and casino sessions.</p>
             <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-              <a href="/sportsbook" style={{ padding: '0.5rem 1rem', background: phoenixTheme.colors.ember, color: '#fff', borderRadius: '6px', textDecoration: 'none' }}>
+              <Link href="/sportsbook" style={{ padding: '0.5rem 1rem', background: phoenixTheme.colors.ember, color: '#fff', borderRadius: '6px', textDecoration: 'none' }}>
                 Sportsbook
-              </a>
-              <a href="/casino" style={{ padding: '0.5rem 1rem', background: phoenixTheme.colors.flame, color: '#fff', borderRadius: '6px', textDecoration: 'none' }}>
+              </Link>
+              <Link href="/casino" style={{ padding: '0.5rem 1rem', background: phoenixTheme.colors.flame, color: '#fff', borderRadius: '6px', textDecoration: 'none' }}>
                 Casino
-              </a>
+              </Link>
             </div>
             <button onClick={handleLogout} type="button"
               style={{ marginTop: '1.5rem', padding: '0.5rem 1.5rem', background: '#555', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>

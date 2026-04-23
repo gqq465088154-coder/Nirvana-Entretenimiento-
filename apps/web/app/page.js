@@ -38,8 +38,9 @@ export default function HomePage() {
                 {localeLabels[item]}
               </option>
             ))}
-          </div>
-        </section>
+          </select>
+        </label>
+      </header>
 
       <section id="home" className={styles.hero}>
         <span className={styles.badge}>{t.heroBadge}</span>
