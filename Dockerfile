@@ -30,8 +30,6 @@ ENV NODE_ENV=production
 COPY --from=backend-deps --chown=node:node /app/node_modules ./node_modules
 COPY --chown=node:node package.json ./
 COPY --chown=node:node backend ./backend
-# Ensure the logger's output directory is writable by the non-root user
-RUN mkdir -p /app/logs && chown node:node /app/logs
 USER node
 EXPOSE 4000
 CMD ["node", "backend/src/server.js"]
