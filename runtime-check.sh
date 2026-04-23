@@ -5,8 +5,15 @@ info()  { echo "[INFO]  $*"; }
 warn()  { echo "[WARN]  $*"; }
 error() { echo "[ERROR] $*" >&2; }
 
+if [[ -f .env ]]; then
+  # shellcheck disable=SC1091
+  source .env
+fi
+
 MAX_RETRIES="${RUNTIME_CHECK_RETRIES:-5}"
 RETRY_DELAY="${RUNTIME_CHECK_DELAY:-4}"
+WEB_HOST_PORT="${WEB_HOST_PORT:-3000}"
+API_HOST_PORT="${API_HOST_PORT:-4000}"
 
 # Probe a URL up to MAX_RETRIES times with a delay between attempts.
 check_endpoint() {
@@ -30,8 +37,8 @@ check_endpoint() {
 
 main() {
   info "Running runtime endpoint checks"
-  check_endpoint "http://localhost:3000"    "Web  (http://localhost:3000)"
-  check_endpoint "http://localhost:4000/api/health" "API  (http://localhost:4000/api/health)"
+  check_endpoint "http://localhost:${WEB_HOST_PORT}" "Web  (http://localhost:${WEB_HOST_PORT})"
+  check_endpoint "http://localhost:${API_HOST_PORT}/api/health" "API  (http://localhost:${API_HOST_PORT}/api/health)"
   info "All runtime checks passed ✓"
 }
 

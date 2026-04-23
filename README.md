@@ -51,6 +51,7 @@
 - `./install.sh`：安装项目依赖和 ClawPilot
 - `./pair.sh`：生成配对码（OpenClaw/Hermes）
 - `./deploy.sh`：Docker 一键部署
+- `./deploy.ps1`：Windows PowerShell 一键部署
 - `./runtime-check.sh`：检查 Web/API 可用性
 - `./create-release-zip.sh`：打包发布 ZIP
 
@@ -77,6 +78,9 @@ PAIR_RUNTIME=Hermes ./pair.sh
 
 # 6) Docker 一键部署
 ./deploy.sh
+
+# Windows PowerShell
+./deploy.ps1
 ```
 
 ## 环境变量
@@ -84,8 +88,20 @@ PAIR_RUNTIME=Hermes ./pair.sh
 复制示例配置：
 
 ```bash
+cp .env.example .env
 cp apps/web/.env.example apps/web/.env
 cp backend/.env.example backend/.env
+```
+
+如本机已有服务占用端口，可在 `.env` 中覆盖以下主机端口：
+
+```bash
+HTTP_PORT=8080
+HTTPS_PORT=8443
+WEB_HOST_PORT=3001
+API_HOST_PORT=4001
+POSTGRES_HOST_PORT=5433
+REDIS_HOST_PORT=6380
 ```
 
 ## API 快速验证
@@ -104,7 +120,13 @@ curl -s http://localhost:4000/api/sportsbook/markets -H "authorization: Bearer <
 
 ```bash
 ./create-release-zip.sh
-# 输出: release/Nirvana-Entretenimiento-YYYYmmdd-HHMMSS.zip
+# 输出: release/Nirvana-Entretenimiento-v<version>-<branch>-YYYYmmdd-HHMMSS.zip
+```
+
+Windows 也可直接运行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\create-release-zip.ps1
 ```
 
 ## License
