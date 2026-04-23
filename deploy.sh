@@ -5,6 +5,15 @@ info()  { echo "[INFO]  $*"; }
 warn()  { echo "[WARN]  $*"; }
 error() { echo "[ERROR] $*" >&2; }
 
+if [[ -f .env ]]; then
+  # shellcheck disable=SC1091
+  source .env
+fi
+
+HTTP_PORT="${HTTP_PORT:-80}"
+WEB_HOST_PORT="${WEB_HOST_PORT:-3000}"
+API_HOST_PORT="${API_HOST_PORT:-4000}"
+
 # Per-service wait timeouts (seconds)
 readonly TIMEOUT_POSTGRES=90
 readonly TIMEOUT_REDIS=60
@@ -57,9 +66,10 @@ main() {
 
   info "========================================"
   info "Deployment completed successfully 🚀"
-  info "  Web frontend : http://localhost:3000"
-  info "  Backend API  : http://localhost:4000"
-  info "  Health check : http://localhost:4000/api/health"
+  info "  Web frontend : http://localhost:${WEB_HOST_PORT}"
+  info "  Backend API  : http://localhost:${API_HOST_PORT}"
+  info "  Health check : http://localhost:${API_HOST_PORT}/api/health"
+  info "  Reverse proxy: http://localhost:${HTTP_PORT}"
   info "========================================"
 }
 
