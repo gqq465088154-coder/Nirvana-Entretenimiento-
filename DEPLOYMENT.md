@@ -81,3 +81,44 @@ curl -f http://localhost:4000/api/metrics
 ```bash
 docker compose logs backend web nginx postgres redis
 ```
+
+## HTTPS / Let's Encrypt
+
+### Prerequisites
+
+- A public domain with a DNS **A record** pointing to your server's IP
+- Ports **80** and **443** open in your firewall / cloud security group
+
+### First-time setup
+
+```bash
+# Set your domain and email, then run the init script
+DOMAIN=example.com EMAIL=admin@example.com bash init-letsencrypt.sh
+```
+
+The script:
+1. Patches `infra/nginx/default.conf` with your domain
+2. Creates a temporary self-signed cert so nginx can start
+3. Starts nginx to serve the ACME webroot challenge
+4. Obtains a real certificate from Let's Encrypt
+5. Reloads nginx with the real cert
+
+Use `STAGING=1` during testing to avoid Let's Encrypt rate limits:
+
+```bash
+STAGING=1 DOMAIN=example.com EMAIL=admin@example.com bash init-letsencrypt.sh
+```
+
+### Automatic renewal
+
+The `certbot` service in docker-compose checks for renewal every 12 hours.  
+No additional cron job needed — just keep `docker compose up -d` running.
+
+### After first-time setup, start everything
+
+```bash
+docker compose up -d
+```
+
+Traffic flow: browser → nginx :443 (TLS) → web :3000 / backend :4000
+
