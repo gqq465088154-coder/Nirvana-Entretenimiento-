@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { getSportsbookEvents, placeBet } from '../../lib/api/client';
 import { phoenixTheme } from '../../lib/theme/phoenixTheme';
 
@@ -32,7 +33,7 @@ export default function SportsbookPage() {
       <h1 style={{ fontFamily: phoenixTheme.typography.heading, color: phoenixTheme.colors.flame }}>
         🔥 Sportsbook
       </h1>
-      <p><a href="/" style={{ color: phoenixTheme.colors.glow }}>← Back to Home</a></p>
+      <p><Link href="/" style={{ color: phoenixTheme.colors.glow }}>← Back to Home</Link></p>
 
       {loading && <p>Loading events...</p>}
       {error && <p style={{ color: '#ff4444' }}>Error: {error}</p>}
